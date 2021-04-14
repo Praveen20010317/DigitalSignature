@@ -45,6 +45,8 @@ dropArea.addEventListener("drop", (event)=>{
         });
       }
       fileReader.readAsArrayBuffer(file);
+  }else {
+    alert("Please select Pdf file")
   }
 });
   
