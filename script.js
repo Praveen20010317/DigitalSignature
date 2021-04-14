@@ -1,20 +1,69 @@
+// DRAG AND DROP
+const dropArea = document.getElementById("uploader-box");
 
-function check_file() {
-/*	$("document").ready(function() {
-		$("#myPdf").click(function() {
-			$("html, body").animate({
-					scrollTop: innerHeight,
-				},
-				"slow"
-			);
-			return false;
-		});
-	});
-*/	
+dropArea.addEventListener("dragover", (event)=>{
+  event.preventDefault(); 
+  dropArea.classList.add("active");
+});
+
+dropArea.addEventListener("dragleave", ()=>{
+  dropArea.classList.remove("active");
+});
+
+dropArea.addEventListener("drop", (event)=>{
+  event.preventDefault(); 
+  file = event.dataTransfer.files[0];
+  document.getElementById('first').style.display = "none";
+  document.getElementById('second').style.display = "block";
+  var file = event.dataTransfer.files[0];
+  var fileReader = new FileReader();
+  fileReader.onload = function() {
+    var typedarray = new Uint8Array(this.result);
+    console.log(typedarray);
+    const loadingTask = pdfjsLib.getDocument(typedarray);
+    loadingTask.promise.then(pdf => {
+      pdf.getPage(1).then(function(page) {
+        console.log('Page loaded');
+        var scale = 1.5;
+        var viewport = page.getViewport({
+          scale: scale
+        });
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        var renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
+        var renderTask = page.render(renderContext);
+        renderTask.promise.then(function() {
+         	console.log('Page rendered');
+        });
+      });
+    });
+  }
+  fileReader.readAsArrayBuffer(file);
+});
+
+$(document).ready(function(){
+  $('input[type="file"]').change(function(e){
+      var fileName = e.target.files[0].name;
+      document.getElementById("uploader-box").innerHTML = fileName;
+      document.getElementById('first').style.display = "none";
+      document.getElementById('second').style.display = "block";
+  });
+});
+
+function file() {
+  loadPdf();
 }
+// LOAD PDF INTO CANVAS
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.worker.js';
-document.getElementById('myPdf').onchange = function(event) {
+function loadPdf() {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.5.207/pdf.worker.js';
+  document.getElementById('myPdf').onchange = function(event) {
   var file = event.target.files[0];
   var fileReader = new FileReader();
   fileReader.onload = function() {
@@ -24,7 +73,6 @@ document.getElementById('myPdf').onchange = function(event) {
     loadingTask.promise.then(pdf => {
       pdf.getPage(1).then(function(page) {
         console.log('Page loaded');
-
         var scale = 1.5;
         var viewport = page.getViewport({
           scale: scale
@@ -49,20 +97,19 @@ document.getElementById('myPdf').onchange = function(event) {
   fileReader.readAsArrayBuffer(file);
 }
 
+}
+
+// MODELBOX TO ADD SIGNATURE
 var modal = document.getElementById("myModal");
-
 var btn = document.getElementById("add_sign");
-
 var span = document.getElementsByClassName("close")[0];
  
 btn.onclick = function() {
   	modal.style.display = "block";
 }
-
 span.onclick = function() {
   modal.style.display = "none";
 }
-
 window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
@@ -72,14 +119,15 @@ window.onclick = function(event) {
 jQuery(document).ready(function($){
 	var canvas = document.getElementById("signature");
 	var signaturePad = new SignaturePad(canvas);
-	$('#add-signature').on('click', function() {
-		console.log(canvas.toDataURL("image/jpg"));
+	$('#add-signature').on('click', function() {                                      
+	  console.log(canvas.toDataURL("image/jpg"));
 		const img = document.getElementById('img_v');
 		img.src = canvas.toDataURL("image/jpg");
 		document.getElementById("add_sign").style.display = "none";
 		document.getElementById("download").style.display = "block";
 		document.getElementById("img_v").style.display = "block";
 		document.getElementById("delete").style.display = "block";
+    document.getElementById("add").style.display = "block";
 		return img;
 	});
 	
@@ -89,7 +137,7 @@ jQuery(document).ready(function($){
 	
 });
 
-//Make the DIV element draggagle:
+// DRAGGABLE SIGNATURE
 dragElement(document.getElementById("drag_sign"));
 
 function dragElement(elmnt) {
@@ -104,23 +152,19 @@ function dragElement(elmnt) {
   function dragMouseDown(e) {
     e = e || window.event;
     e.preventDefault();
-    // get the mouse cursor position at startup:
     pos3 = e.clientX;
     pos4 = e.clientY;
     document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
   }
 
   function elementDrag(e) {
     e = e || window.event;
     e.preventDefault();
-    // calculate the new cursor position:
     pos1 = pos3 - e.clientX;
     pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
     pos4 = e.clientY;
-    // set the element's new position:
     elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
   }
@@ -131,22 +175,36 @@ function dragElement(elmnt) {
   }
 }
 
+$('#add').on('click', function() {
+  var canvas1 = document.getElementById('canvas');
+  var context1 = canvas1.getContext('2d');
+  var canvas = document.getElementById("signature");
+	const img = document.getElementById('img_v');
+	img.src = canvas.toDataURL("image/jpg");
+  img.onload = function(){        
+      context1.drawImage(img, 20, 900);
+  }; 
+	document.getElementById("add_sign").style.display = "none";
+	document.getElementById("download").style.display = "block";
+});
+
 $('#delete').on('click', function() {
+  document.getElementById("add").style.display = "none";
 	document.getElementById("img_v").style.display = "none";
 	document.getElementById("delete").style.display = "none";
 	document.getElementById("add_sign").style.display = "block";
 	document.getElementById("download").style.display = "none";
 });
 
-function download_img() {
-	var canvas = document.getElementById("canvas");
+// DOWNLOAD IMAGE 
+var canvas = document.getElementById("canvas");
 	$('#download').on('click', function() {
 		console.log(canvas.toDataURL("image/jpg"));
 		const img = document.getElementById('img_v1');
-		img.src = canvas.toDataURL("image/jpeg",1.0);
+		img.src = canvas.toDataURL("image/jpeg");
 		var pdf = new jsPDF();
 		pdf.addImage(img, 'JPEG', 0, 0);
 		pdf.save("download.pdf");  
 		return img;
-	});
-} 
+});
+

@@ -8,9 +8,6 @@
     font-family: 'Courier New', Courier, monospace;
     box-shadow: 1px 1px 1px rgba(128, 128, 128, 0.283);
 }
-#header_2 {
-    margin-top: 2vh;
-}
 #close {
     float: right;
     font-size:3vmin;
@@ -34,7 +31,7 @@ input[type="file"] {
     font-size:3vmin;
     font-family: 'Courier New', Courier, monospace;
 }
-#upload, #add_sign, #download, #clear-signature, #add-signature {
+#upload, #add_sign, #download, #clear-signature, #add-signature, #hide_box {
     width: 7vw;
     padding: 2.5vmin;
     color: white;
@@ -48,6 +45,11 @@ input[type="file"] {
     margin-top: 5vh;
     padding: 1.5vmin;
     margin-left: 1vw;
+}
+#hide_box {
+    margin-top: 5vh;
+    width: 10vw;
+    display: none;
 }
 #add-signature {
     margin-top: 5vh;
@@ -108,18 +110,34 @@ input[type="file"] {
 	border-width: 0.1vmin;
     height: 15vh;
     width: 10vw;
+    border-radius: 2vw;
     display: none;
 }
 #delete {
-    height: 3vh;
-    width: 2vw;
+    position: relative;
+    height: 2vh;
+    width: 1vw;
     display: none;
     float:right;
 }
-#canvas, #img_v1 {
+#add {
+    height: 2vh;
+    width: 1vw;
+    float:left;
+    display: none;
+}
+#canvas {
+    border: black;
+	border-style: solid;
+	border-width: 0.1vmin;
+    margin-top: 10vh;
     margin-left: 25vw;
     margin-right: 25vw;
-    margin-top: 15vh;
+}
+#img_v1 {
+    margin-left: 25vw;
+    margin-right: 25vw;
+    margin-top: 10vh;
     width: 50vw;
     height: 100vh;
     border: black;
@@ -133,10 +151,9 @@ input[type="file"] {
 #add_sign, #download {
     margin-top: 5vh;
     width: 10vw;
+    margin-bottom:20vh;
     margin-left: 45vw;
 }
-
-#download {
+#download, #second {
     display: none;
-    margin-bottom:20vh;
 }
