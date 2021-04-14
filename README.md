@@ -1,6 +1,7 @@
 # DigitalSignature
 
-# Objective : The intent of the challenge is to develop a feature that enables an user to sign a pdf document digitally.
+# Objective : 
+The intent of the challenge is to develop a feature that enables an user to sign a pdf document digitally.
 
 # Step 1 :
 1. The initial screen should allow the user to upload a document via drag
