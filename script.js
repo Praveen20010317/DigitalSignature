@@ -1,6 +1,6 @@
 // DRAG AND DROP
 const dropArea = document.getElementById("uploader-box");
-
+var MAX_FILE_SIZE = 12 * 1024 * 1024; // 12MB
 dropArea.addEventListener("dragover", (event)=>{
   event.preventDefault(); 
   dropArea.classList.add("active");
@@ -13,46 +13,54 @@ dropArea.addEventListener("dragleave", ()=>{
 dropArea.addEventListener("drop", (event)=>{
   event.preventDefault(); 
   file = event.dataTransfer.files[0];
-  document.getElementById('first').style.display = "none";
-  document.getElementById('second').style.display = "block";
-  var file = event.dataTransfer.files[0];
-  var fileReader = new FileReader();
-  fileReader.onload = function() {
-    var typedarray = new Uint8Array(this.result);
-    console.log(typedarray);
-    const loadingTask = pdfjsLib.getDocument(typedarray);
-    loadingTask.promise.then(pdf => {
-      pdf.getPage(1).then(function(page) {
-        console.log('Page loaded');
-        var scale = 1.5;
-        var viewport = page.getViewport({
-          scale: scale
+  if (event.dataTransfer.files[0].type == "application/pdf"){
+    document.getElementById('first').style.display = "none";
+    document.getElementById('second').style.display = "block";
+    var file = event.dataTransfer.files[0];
+      var fileReader = new FileReader();
+      fileReader.onload = function() {
+        var typedarray = new Uint8Array(this.result);
+        console.log(typedarray);
+        const loadingTask = pdfjsLib.getDocument(typedarray);
+        loadingTask.promise.then(pdf => {
+          pdf.getPage(1).then(function(page) {
+            console.log('Page loaded');
+            var scale = 1.5;
+            var viewport = page.getViewport({
+              scale: scale
+            });
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            var renderContext = {
+              canvasContext: context,
+              viewport: viewport
+            };
+            var renderTask = page.render(renderContext);
+            renderTask.promise.then(function() {
+              console.log('Page rendered');
+            });
+          });
         });
-        var canvas = document.getElementById('canvas');
-        var context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        var renderContext = {
-          canvasContext: context,
-          viewport: viewport
-        };
-        var renderTask = page.render(renderContext);
-        renderTask.promise.then(function() {
-         	console.log('Page rendered');
-        });
-      });
-    });
+      }
+      fileReader.readAsArrayBuffer(file);
   }
-  fileReader.readAsArrayBuffer(file);
 });
+  
 
 $(document).ready(function(){
   $('input[type="file"]').change(function(e){
       var fileName = e.target.files[0].name;
-      document.getElementById("uploader-box").innerHTML = fileName;
-      document.getElementById('first').style.display = "none";
-      document.getElementById('second').style.display = "block";
+      fileSize = this.files[0].size;
+        if (fileSize > MAX_FILE_SIZE) {
+            this.setCustomValidity("File must not exceed 12 MB!");
+            this.reportValidity();
+        } else {
+          document.getElementById("uploader-box").innerHTML = fileName;
+          document.getElementById('first').style.display = "none";
+          document.getElementById('second').style.display = "block";   
+        }
   });
 });
 
