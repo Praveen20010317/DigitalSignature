@@ -132,6 +132,7 @@ jQuery(document).ready(function($){
 	  console.log(canvas.toDataURL("image/jpg"));
 		const img = document.getElementById('img_v');
 		img.src = canvas.toDataURL("image/jpg");
+    document.getElementById("myModal").style.display = "none";
 		document.getElementById("add_sign").style.display = "none";
 		document.getElementById("download").style.display = "block";
 		document.getElementById("img_v").style.display = "block";
