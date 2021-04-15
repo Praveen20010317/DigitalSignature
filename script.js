@@ -46,7 +46,7 @@ dropArea.addEventListener("drop", (event)=>{
       }
       fileReader.readAsArrayBuffer(file);
   }else {
-    alert("Please select Pdf file")
+    alert("Please select Pdf file");
   }
 });
   
@@ -106,7 +106,6 @@ function loadPdf() {
   }
   fileReader.readAsArrayBuffer(file);
 }
-
 }
 
 // MODELBOX TO ADD SIGNATURE
@@ -177,6 +176,7 @@ function dragElement(elmnt) {
     pos4 = e.clientY;
     elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
     elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+
   }
 
   function closeDragElement() {
@@ -193,7 +193,10 @@ $('#add').on('click', function() {
 	img.src = canvas.toDataURL("image/jpg");
   img.onload = function(){        
       context1.drawImage(img, 20, 900);
-  }; 
+  };
+  document.getElementById("add").style.display = "none";
+	document.getElementById("img_v").style.display = "none";
+	document.getElementById("delete").style.display = "none"; 
 	document.getElementById("add_sign").style.display = "none";
 	document.getElementById("download").style.display = "block";
 });
